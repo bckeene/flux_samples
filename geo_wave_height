@@ -1,0 +1,10 @@
+import "experimental/geo"
+
+from(bucket: "stormglass")
+  |> range(start: -48h)
+  |> filter(fn: (r) => r["_measurement"] == "weather")
+  |> filter(fn: (r) => r["_field"] == "lon" or r["_field"] == "lat" or r["_field"] == "wave_height")
+  |> geo.shapeData(latField: "lat", lonField: "lon", level: 10)
+  |> map(fn: (r) => ({ r with wave_height: r.wave_height * 3.28084}))
+  |> rename(columns: {wave_height: "_value"})
+  |> max()
