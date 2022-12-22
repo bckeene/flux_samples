@@ -1,0 +1,5 @@
+from(bucket: "stormglass")
+  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+  |> filter(fn: (r) => r["_measurement"] == "weather")
+  |> filter(fn: (r) => r["_field"] == "wave_height")
+  |> map(fn: (r) => ({ r with _value: r._value * 3.28084}))
